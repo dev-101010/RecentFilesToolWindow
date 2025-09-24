@@ -1,0 +1,37 @@
+<idea-plugin>
+    <id>com.dennis.recenttabs</id>
+    <name>Recent Tabs ToolWindow</name>
+    <version>1.0</version>
+    <vendor>Dennis Drochmann</vendor>
+
+    <description>
+        <![CDATA[
+            <p>
+              Adds a dedicated ToolWindow that displays a list of recently activated editor tabs.
+              The list updates automatically as you switch between files.
+            </p>
+            <ul>
+              <li>Sorted by last activation (most recent on top)</li>
+              <li>Shows file names with full path tooltips</li>
+              <li>Opens files via single-click</li>
+              <li>Displays up to 50 recently accessed files</li>
+              <li>Fully compatible with WebStorm (no Java plugin dependency)</li>
+            </ul>
+            <p>
+              Ideal for developers who want a persistent, always-visible history of active files —
+              independent of the built-in <code>Recent Files</code> popup.
+            </p>
+        ]]>
+    </description>
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow
+                id="Recent Tabs"
+                anchor="left"
+                factoryClass="com.dennis.recenttabs.RecentTabsToolWindow"
+                secondary="true"
+                canCloseContents="false"
+                icon="/icons/recentTabs.svg"/>
+    </extensions>
+</idea-plugin>
