@@ -13,3 +13,4 @@
               Ideal for developers who want a persistent, always-visible history of active files —
               independent of the built-in <code>Recent Files</code> popup.
             </p>
+<iframe width="245px" height="48px" src="https://plugins.jetbrains.com/embeddable/install/28561"></iframe>
