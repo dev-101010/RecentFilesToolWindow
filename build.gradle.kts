@@ -29,9 +29,9 @@ tasks {
         untilBuild.set("253.*")
     }
     withType<JavaCompile> {
-        sourceCompatibility = "23"
-        targetCompatibility = "23"
-        options.release.set(23)
+        sourceCompatibility = "17"
+        targetCompatibility = "17"
+        options.release.set(17)
     }
 }
 
