@@ -4,26 +4,34 @@ plugins {
 }
 
 group = "com.dennis"
-version = "1.0"
+version = "1.1"
 
 repositories {
     mavenCentral()
 }
 
+// Use local Java 25 as toolchain, but compile targeting Java 23 bytecode (required by IntelliJ Platform 2025.3)
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(25))
+    }
+}
+
 intellij {
-    version.set("2025.2")
+    version.set("2025.3")
     type.set("IU")
     plugins.set(listOf("com.intellij.java"))
 }
 
 tasks {
     patchPluginXml {
-        sinceBuild.set("252")
-        untilBuild.set("252.*")
+        sinceBuild.set("253")
+        untilBuild.set("253.*")
     }
     withType<JavaCompile> {
-        sourceCompatibility = "17"
-        targetCompatibility = "17"
+        sourceCompatibility = "23"
+        targetCompatibility = "23"
+        options.release.set(23)
     }
 }
 
