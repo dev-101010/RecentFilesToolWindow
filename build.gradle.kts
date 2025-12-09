@@ -10,7 +10,7 @@ repositories {
     mavenCentral()
 }
 
-// Use local Java 25 as toolchain, but compile targeting Java 23 bytecode (required by IntelliJ Platform 2025.3)
+// Use local Java 25 as toolchain, but compile targeting Java 17 bytecode (required by IntelliJ Platform 2025.3)
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(25))
