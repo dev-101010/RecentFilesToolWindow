@@ -1,8 +1,7 @@
 <idea-plugin>
-    <id>com.dennis.recenttabs</id>
+    <id>de.drochmann.recenttabs</id>
     <name>Recent Tabs ToolWindow</name>
-    <version>1.0</version>
-    <vendor>Dennis Drochmann</vendor>
+    <vendor email="dennis.drochmann@gmail.com" url="https://github.com/dev-101010/RecentFilesToolWindow">Dennis Drochmann</vendor>
 
     <description>
         <![CDATA[
@@ -13,9 +12,9 @@
             <ul>
               <li>Sorted by last activation (most recent on top)</li>
               <li>Shows file names with full path tooltips</li>
-              <li>Opens files via single-click</li>
+              <li>Opens files via single-click, or with <code>Enter</code> on the selected row</li>
               <li>Displays up to 50 recently accessed files</li>
-              <li>Fully compatible with WebStorm (no Java plugin dependency)</li>
+              <li>Platform-only plugin — works in every JetBrains IDE, no Java plugin dependency</li>
             </ul>
             <p>
               Ideal for developers who want a persistent, always-visible history of active files —
@@ -29,7 +28,7 @@
         <toolWindow
                 id="Recent Tabs"
                 anchor="left"
-                factoryClass="com.dennis.recenttabs.RecentTabsToolWindow"
+                factoryClass="de.drochmann.recenttabs.RecentTabsToolWindow"
                 secondary="true"
                 canCloseContents="false"
                 icon="/icons/recentTabs.svg"/>

@@ -1,40 +1,80 @@
+import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
+
 plugins {
     id("java")
-    id("org.jetbrains.intellij") version "1.17.3"
+    id("org.jetbrains.intellij.platform") version "2.18.1"
 }
 
-group = "com.dennis"
-version = "1.1"
+group = providers.gradleProperty("pluginGroup").get()
+version = providers.gradleProperty("pluginVersion").get()
 
 repositories {
     mavenCentral()
+
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
-// Use local Java 25 as toolchain, but compile targeting Java 17 bytecode (required by IntelliJ Platform 2025.3)
+dependencies {
+    intellijPlatform {
+        // Zielt auf die lokal installierte WebStorm-Version (Build WS-262.*)
+        webstorm(providers.gradleProperty("platformVersion"))
+
+        pluginVerifier()
+        zipSigner()
+    }
+}
+
+intellijPlatform {
+    buildSearchableOptions = false
+
+    pluginConfiguration {
+        ideaVersion {
+            // 2026.2 und neuer; kein until-build, damit kommende Releases nicht ausgesperrt werden
+            sinceBuild = providers.gradleProperty("pluginSinceBuild")
+            untilBuild = provider { null }
+        }
+
+        changeNotes = """
+            <ul>
+              <li><b>1.3.0</b>: Erster Marketplace-Release. Tool-Window-Subscription haengt jetzt am
+                  Lifecycle des Tool Windows (kein Listener-Leak mehr), Hover- und Auswahlfarben nutzen
+                  die Theme-API und funktionieren damit auch in dunklen Themes, Enter oeffnet die
+                  markierte Datei, MIT-Lizenz.</li>
+              <li><b>1.2</b>: Auf IntelliJ Platform 2026.2 aktualisiert (Gradle IntelliJ Platform Plugin 2.x).</li>
+              <li><b>1.1</b>: ToolWindow mit Liste der zuletzt aktivierten Editor-Tabs.</li>
+            </ul>
+        """.trimIndent()
+    }
+
+    signing {
+        certificateChainFile = layout.file(providers.environmentVariable("CERTIFICATE_CHAIN_FILE").map { file(it) })
+        privateKeyFile = layout.file(providers.environmentVariable("PRIVATE_KEY_FILE").map { file(it) })
+        password = providers.environmentVariable("PRIVATE_KEY_PASSWORD")
+    }
+
+    publishing {
+        token = providers.environmentVariable("PUBLISH_TOKEN")
+    }
+
+    pluginVerification {
+        ides {
+            // Bewusst nur die lokal vorhandene Ziel-IDE, damit der Lauf ohne
+            // GB-weise IDE-Downloads durchlaeuft. Der Marketplace verifiziert beim
+            // Upload zusaetzlich gegen sein eigenes IDE-Set.
+            create(IntelliJPlatformType.WebStorm, providers.gradleProperty("platformVersion"))
+        }
+    }
+}
+
 java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(25))
-    }
+    // IntelliJ Platform 2026.2 laeuft auf JBR 25
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
-intellij {
-    version.set("2025.3")
-    type.set("IU")
-    plugins.set(listOf("com.intellij.java"))
-}
-
-tasks {
-    patchPluginXml {
-        sinceBuild.set("253")
-        untilBuild.set("253.*")
-    }
-    withType<JavaCompile> {
-        sourceCompatibility = "17"
-        targetCompatibility = "17"
-        options.release.set(17)
-    }
-}
-
-tasks.named("buildSearchableOptions").configure {
-    enabled = false
+tasks.withType<JavaCompile>().configureEach {
+    options.release = 25
+    options.encoding = "UTF-8"
 }
