@@ -8,6 +8,15 @@ plugins {
 group = providers.gradleProperty("pluginGroup").get()
 version = providers.gradleProperty("pluginVersion").get()
 
+/**
+ * Liest ein Geheimnis bevorzugt aus der Umgebung (CI), sonst aus einer Gradle-Property.
+ * Die Property gehoert in die globale ~/.gradle/gradle.properties, nicht in die des
+ * Projekts - letztere liegt im Repository.
+ */
+fun secret(environmentVariable: String, gradleProperty: String): Provider<String> =
+    providers.environmentVariable(environmentVariable)
+        .orElse(providers.gradleProperty(gradleProperty))
+
 repositories {
     mavenCentral()
 
@@ -49,13 +58,13 @@ intellijPlatform {
     }
 
     signing {
-        certificateChainFile = layout.file(providers.environmentVariable("CERTIFICATE_CHAIN_FILE").map { file(it) })
-        privateKeyFile = layout.file(providers.environmentVariable("PRIVATE_KEY_FILE").map { file(it) })
-        password = providers.environmentVariable("PRIVATE_KEY_PASSWORD")
+        certificateChainFile = layout.file(secret("CERTIFICATE_CHAIN_FILE", "signingCertificateChainFile").map { file(it) })
+        privateKeyFile = layout.file(secret("PRIVATE_KEY_FILE", "signingPrivateKeyFile").map { file(it) })
+        password = secret("PRIVATE_KEY_PASSWORD", "signingPassword")
     }
 
     publishing {
-        token = providers.environmentVariable("PUBLISH_TOKEN")
+        token = secret("PUBLISH_TOKEN", "marketplaceToken")
     }
 
     pluginVerification {

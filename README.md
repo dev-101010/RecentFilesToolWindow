@@ -33,15 +33,23 @@ Open the tool window via **View → Tool Windows → Recent Tabs**.
 
 ## Publishing
 
-Signing and publishing read their secrets from the environment, so nothing sensitive
-lives in the repository:
+Signing and publishing read their secrets from the environment, falling back to Gradle
+properties, so nothing sensitive lives in the repository:
 
-| Variable                 | Purpose                                            |
-|--------------------------|----------------------------------------------------|
-| `CERTIFICATE_CHAIN_FILE` | Path to the signing certificate chain (`chain.crt`) |
-| `PRIVATE_KEY_FILE`       | Path to the private key (`private.pem`)             |
-| `PRIVATE_KEY_PASSWORD`   | Password for the private key                        |
-| `PUBLISH_TOKEN`          | JetBrains Marketplace permanent token               |
+| Environment variable     | Gradle property               | Purpose                                             |
+|--------------------------|-------------------------------|-----------------------------------------------------|
+| `CERTIFICATE_CHAIN_FILE` | `signingCertificateChainFile` | Path to the signing certificate chain (`chain.crt`) |
+| `PRIVATE_KEY_FILE`       | `signingPrivateKeyFile`       | Path to the private key (`private.pem`)             |
+| `PRIVATE_KEY_PASSWORD`   | `signingPassword`             | Password for the private key                        |
+| `PUBLISH_TOKEN`          | `marketplaceToken`            | JetBrains Marketplace permanent token (`perm:…`)    |
+
+Use the environment variables in CI. Locally, put the Gradle properties in your **global**
+`~/.gradle/gradle.properties` — never in this project's `gradle.properties`, which is
+committed:
+
+```properties
+marketplaceToken=perm:...
+```
 
 ```bash
 ./gradlew signPlugin
